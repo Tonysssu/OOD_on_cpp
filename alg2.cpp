@@ -91,6 +91,36 @@ vector<vector<int>> permutations(vector<int> numlist){
 }
 
 
+void cbn(vector<int> numlist, vector<vector<int>> &res, vector<int> &cur,int id, int index){
+    if (cur.size()==id){
+        res.push_back(cur);
+        return;
+    }
+
+    for (int pt=index; pt<numlist.size(); pt++) {
+        if(find(cur.begin(), cur.end(), numlist[pt])!= cur.end()){
+            continue;
+        }
+        cur.push_back(numlist[pt]);
+        cbn(numlist, res, cur, id, index + 1);
+        cur.pop_back();
+    }
+}
+
+vector<vector<vector<int>>> combination(vector<int> num){
+    vector<vector<vector<int>>> part;
+    int kn = num.size();
+    int in=0;
+    for (int i =0;i<=kn;i++){
+        vector<vector<int>> results;
+        vector<int> c;
+        cbn(num,results,c,i,in);
+        part.push_back(results);
+    }
+    return part;
+}
+
+
 int main() {
 //    vector<int> k{2,3,4,5};
 //    int val=13;
@@ -116,10 +146,13 @@ int main() {
 //        cout<<0<<endl;
 //    }
     vector<int> nu={1,2,3};
-    vector<vector<int>> res=permutations(nu);
+    vector<vector<vector<int>>> res=combination(nu);
+
     for(auto ie:res){
         for (auto e:ie){
-            cout<<e;
+            for (auto t:e) {
+                cout << t;
+            }
         }
         cout<<endl;
     }
