@@ -11,7 +11,7 @@
 using namespace std;
 
 
-//case
+//case1
 bool my_knapsake(vector<int> v, int w, int in)
 {
     if(w==0){
@@ -23,6 +23,13 @@ bool my_knapsake(vector<int> v, int w, int in)
     return my_knapsake(v, w, in+1) || my_knapsake(v, w-v[in], in+1);   //equivalent sub_question
 }
 
+//case2
+void my_uti(int tgt,vector<int> it, vector<vector<int>> &res, vector<int> &cur){
+
+}
+vector<vector<int>> my_knap(int target,vector<int> item){
+
+}
 
 //comb1
 void my_comb(vector<int> num, vector<vector<int>> &res, vector<int> &cu,int index){
@@ -179,6 +186,8 @@ vector<vector<int>> my_pem3use(vector<int> nums){
     pem3(nums,result,c,in);
     return result;
 }
+
+
 
 
 
