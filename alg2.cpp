@@ -7,6 +7,7 @@
 #include <math.h>
 #include <algorithm>
 #include <list>
+#include <set>
 
 using namespace std;
 
@@ -24,12 +25,12 @@ bool my_knapsake(vector<int> v, int w, int in)
 }
 
 //case2
-void my_uti(int tgt,vector<int> it, vector<vector<int>> &res, vector<int> &cur){
-
-}
-vector<vector<int>> my_knap(int target,vector<int> item){
-
-}
+//void my_uti(int tgt,vector<int> it, vector<vector<int>> &res, vector<int> &cur){
+//
+//}
+//vector<vector<int>> my_knap(int target,vector<int> item){
+//
+//}
 
 //comb1
 void my_comb(vector<int> num, vector<vector<int>> &res, vector<int> &cu,int index){
@@ -155,7 +156,7 @@ vector<vector<vector<int>>> combination(vector<int> num){
     return part;
 }
 
-//permutation3 [repeat use allow]
+//permutation3 [repeat allow]
 void pem3(vector<int> numlist, vector<vector<int>> &res, vector<int> &cur,vector<bool> visited){
     if (cur.size()==numlist.size()){
         res.push_back(cur);
@@ -188,7 +189,101 @@ vector<vector<int>> my_pem3use(vector<int> nums){
 }
 
 
+//lucky nums
+void luckynums(string nums,int target, vector<string> &result, string temp, int index, long cur, long last){
+    if (index==nums.size()){
+        if (cur==target) {
+            result.push_back(temp);
+        }
+        return;
+    }
+    for (int i=index;i< nums.size();i++){
+        if (nums[index]=='0' && i!=index) {
+            break;
+        }
+        string m = nums.substr(index,i+1);
+        long v=stol(m);
+        if (index==0){
+            luckynums(nums,target,result, temp+m, i+1,v,v);
+        }
+        else {
+            luckynums(nums, target, result, temp + "+"+ m, i + 1, cur+v, v);
+            luckynums(nums, target, result, temp + "-"+ m, i + 1, cur-v, -v);
+            luckynums(nums, target, result, temp + "*"+ m, i + 1, cur-last+last*v, last*v);
+            if (v != 0 && last % v == 0) {
+                luckynums(nums, target, result, temp + "/"+ m, i + 1, cur-last+last/v, last/v);
+            }
+        }
+    }
+}
 
+vector<string> luckn(string nums,long target){
+    vector<string> res;
+    luckynums(nums, target, res,"", 0, 0,0);
+    return res;
+}
+
+
+//OA 
+void helper(vector<int> nums, int target,vector<vector<int>> &res, vector<int> &cur, int index){
+    if(target==0){
+        res.push_back(cur);
+        return;
+    }
+    if (target<0 || index >nums.size()){
+        return;
+    }
+    helper(nums, target,res, cur,index+1);
+    cur.push_back(nums[index]);
+    helper(nums, target-nums[index],res, cur,index+1);
+    cur.pop_back();
+}
+
+vector<vector<int>> oa1(vector<int> nums, int target){
+    vector<vector<int>> result;
+    vector<int> cur;
+    sort(nums.begin(),nums.end());
+    helper(nums, target,result,cur,0);
+    return result;
+}
+
+
+//sticks
+void helper2(vector<int> nums, int target,vector<vector<int>> &res, vector<int> &cur, int index,vector<bool> visited){
+    if(target==0){
+        res.push_back(cur);
+        return;
+    }
+    if (target<0 || index >nums.size()){
+        return;
+    }
+    for (int i=0; i<nums.size();i++)
+        if (visited[i]) {
+            continue;
+        }
+        else {
+            cur.push_back(nums[index]);
+            visited[i] = true;
+            helper(nums, target - nums[index], res, cur, index + 1);
+            cur.pop_back();
+            visited[i] = false;
+        }
+}
+
+
+bool recur(vector<int> sticks, int n){
+    for(int i=0;i<sticks.size();i++){
+        vector<vector<int>> result;
+        vector<int> cur;
+        sort(sticks.begin(),sticks.end());
+        vector<bool> fl(sticks.size(),false);
+        helper2(sticks, sticks[i],result,cur,0,fl);
+        if (result.size()>=n){
+            return true;
+        }
+    }
+    return false;
+}
 
 
 
@@ -216,16 +311,39 @@ int main() {
 //    else{
 //        cout<<0<<endl;
 //    }
-    vector<int> nu={1,1,3};
+//    vector<int> nu={1,1,3};
 //    vector<vector<vector<int>>> res=combination(nu);
-    vector<vector<int>> res=my_pem3use(nu);
+//    vector<vector<int>> res=my_pem3use(nu);
+//    for(auto ie:res){
+//        for (auto e:ie){
+//                cout << e;
+//            }
+//        cout<<endl;
+//        }
+//    }
+
+    vector<string> res=luckn("7765332111",888);
+    vector<int> numlist={1,2,3,5,6 };
+    vector<vector<int>> result=oa1(numlist, 8);
     for(auto ie:res){
-        for (auto e:ie){
-                cout << e;
-            }
-        cout<<endl;
+        for (auto e :ie) {
+            cout << e ;
         }
+        cout<< endl;
     }
+//    vector<int> numlist={1,2,3,2,1};
+//    vector<int> cur;
+//    vector<bool> fl(numlist.size(),false);
+//    vector<vector<int>> result;
+//    helper2(numlist, 2,result,cur,0,fl);
+//    for(auto ie:result){
+//        for (auto e :ie) {
+//            cout << e ;
+//        }
+//        cout<< endl;
+//    }
+//    cout<<recur(numlist,4)<<endl;
+}
 
 
 //    vector<vector<int>> fi=permut(nu,resu,cu,in);
