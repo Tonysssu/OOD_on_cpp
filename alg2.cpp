@@ -224,7 +224,7 @@ vector<string> luckn(string nums,long target){
 }
 
 
-//OA 
+//OA
 void helper(vector<int> nums, int target,vector<vector<int>> &res, vector<int> &cur, int index){
     if(target==0){
         res.push_back(cur);
@@ -257,14 +257,14 @@ void helper2(vector<int> nums, int target,vector<vector<int>> &res, vector<int> 
     if (target<0 || index >nums.size()){
         return;
     }
-    for (int i=0; i<nums.size();i++)
-        if (visited[i]) {
+    for (int i=index; i<nums.size();i++)
+        if (visited[i] || (nums[i]==nums[i-1] && !visited[i-1] && i>0)) {
             continue;
         }
         else {
-            cur.push_back(nums[index]);
+            cur.push_back(nums[i]);
             visited[i] = true;
-            helper(nums, target - nums[index], res, cur, index + 1);
+            helper2(nums, target - nums[i], res, cur, i + 1,visited);
             cur.pop_back();
             visited[i] = false;
         }
@@ -272,17 +272,104 @@ void helper2(vector<int> nums, int target,vector<vector<int>> &res, vector<int> 
 
 
 bool recur(vector<int> sticks, int n){
+    bool tag=false;
     for(int i=0;i<sticks.size();i++){
+        int tar=sticks[i];
         vector<vector<int>> result;
         vector<int> cur;
         sort(sticks.begin(),sticks.end());
         vector<bool> fl(sticks.size(),false);
-        helper2(sticks, sticks[i],result,cur,0,fl);
+        helper2(sticks,tar,result,cur,0,fl);
         if (result.size()>=n){
-            return true;
+            tag=true;
+            break;
         }
     }
-    return false;
+    return tag;
+}
+
+//sticks-2
+//void helper3(vector<int> index){
+//
+//}
+
+//Build Tree
+template <typename T>
+struct Treenode{
+    T _data;
+    Treenode<T>* _left;
+    Treenode<T>* _right;
+    Treenode(T data=T())
+        :_data(data)
+        ,_left(nullptr)
+        ,_right(nullptr){}
+};
+
+template <typename T>
+class Bitree{
+public:
+    Bitree(const T* a, size_t size,int index, const T& invalid){
+        _root=_make_tree(a,size,index,invalid);
+    }
+    Bitree(const Bitree<T>& t){
+        _root=_copy(t._root);
+    }
+    ~Bitree(){
+        _destroy(_root);
+    };
+private:
+    Treenode<T>* _root;
+};
+
+
+template <typename T>
+Treenode<T>* _make_tree(const T* a, size_t size, int& index, const T& invalid){
+    Treenode<T>* root= nullptr;
+    if (index<size && a[index]!=invalid){
+        auto root= new Treenode<T>();
+        root->_data=a[index];
+        root->_left=_make_tree(a,size,index++,invalid);
+        root->_right=_make_tree(a,size,index++,invalid);
+    }
+    return root;
+}
+
+template <typename T>
+Treenode<T>* _copy(const Bitree<T>* root){
+    if(root==nullptr){
+        return nullptr;
+    }
+    auto node = new Treenode<T>(root->_data);
+    node->_left=_copy(root->_left);
+    node->_right=_copy(root->_right);
+    return node;
+}
+
+template <typename T>
+void _destroy(Bitree<T>* root){
+    auto temp=root;
+    if (temp==nullptr){
+        return;
+    }
+    _destroy(temp->_left);
+    _destroy(temp->_right);
+    delete temp;
+    temp=nullptr;
+}
+
+
+
+size_t my_max(size_t a, size_t b){
+    if(a>b){return a;}
+    return b;
+}
+
+template<typename T>
+size_t depth(Treenode<T>* &root){
+    if (root== nullptr){
+        return 0;
+    }
+    return my_max(depth(root->right),depth(root->left))+1;
 }
 
 
@@ -322,27 +409,31 @@ int main() {
 //        }
 //    }
 
-    vector<string> res=luckn("7765332111",888);
-    vector<int> numlist={1,2,3,5,6 };
-    vector<vector<int>> result=oa1(numlist, 8);
-    for(auto ie:res){
-        for (auto e :ie) {
-            cout << e ;
-        }
-        cout<< endl;
-    }
-//    vector<int> numlist={1,2,3,2,1};
-//    vector<int> cur;
-//    vector<bool> fl(numlist.size(),false);
-//    vector<vector<int>> result;
-//    helper2(numlist, 2,result,cur,0,fl);
-//    for(auto ie:result){
+//    vector<string> res=luckn("7765332111",888);
+//    vector<int> numlist={1,2,3,5,6 };
+//    vector<vector<int>> result=oa1(numlist, 8);
+//    for(auto ie:res){
 //        for (auto e :ie) {
 //            cout << e ;
 //        }
 //        cout<< endl;
 //    }
-//    cout<<recur(numlist,4)<<endl;
+//    vector<int> numlist={1,1,1,1,1};
+//    vector<int> num={1,2,3,2,1};
+//    vector<int> cur;
+//    vector<bool> fl(numlist.size(),false);
+//    sort(numlist.begin(),numlist.end());
+//    vector<vector<int>> result;
+//    helper2(numlist, 1,result,cur,0,fl);
+//    for(auto ie:result){
+//        for (auto e :ie) {
+//            cout << e;
+//        }
+//        cout<< endl;
+//    }
+//    cout<<recur(num,3)<<endl;
+
+
 }
 
 
