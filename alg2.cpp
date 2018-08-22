@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <list>
 #include <set>
+//#include "alg.h"
 
 using namespace std;
 
@@ -223,6 +224,71 @@ vector<string> luckn(string nums,long target){
     return res;
 }
 
+//my_nqueens
+//class Solution {
+//public:
+//
+//    void solve_queen(int size, vector<int> cu, int& cot, int dx){
+//        if (dx==size){
+//            cot++;
+//            return;
+//        }
+//        for(int index=0;index<size;index++) {
+//            bool flag=false;
+//            for(int i=0;i<dx;i++){
+//                if(cu[i]==index || (abs(cu[i]-index)==abs(dx-i))){
+//                    flag=true;
+//                    break;
+//                }
+//            }
+//            if (flag) continue;
+//            cu[dx]=index;
+//            solve_queen(size, cu, cot, dx+1);
+//        }
+//    }
+//
+//    int totalNQueens(int size){
+//        vector<int> status(size);
+//        int count=0;
+//        solve_queen(size,status, count,0);
+//        return count;
+//    }
+//};
+
+//nqueens
+bool conflict(vector<int> c, int dy){
+    int dnext=c.size();
+    for(int i=0;i<dnext;i++){
+        if(c[i]==dy || (abs(c[i]-dy)==abs(dnext-i))){
+            return true;
+        }
+    }
+    return false;
+}
+
+void solve_queen(int size, vector<vector<int>>& res, vector<int> cu, int dx){
+    if (dx==size){
+        res.push_back(cu);
+        return;
+    }
+    for(int i=0;i<size;i++) {
+        if (!conflict(cu, i)) {
+            cu.push_back(i);
+            solve_queen(size, res, cu, dx+1);
+            cu.pop_back();
+        }
+    }
+}
+
+int my_nqueen(int size){
+    vector<int> status(size,0);
+    vector<vector<int>> results;
+    vector<int> cur;
+    solve_queen(size, results,cur,0);
+    int n=results.size();
+    return n;
+}
+
 
 //OA
 void helper(vector<int> nums, int target,vector<vector<int>> &res, vector<int> &cur, int index){
@@ -373,6 +439,77 @@ size_t depth(Treenode<T>* &root){
 }
 
 
+//int bitree
+struct Bnode{
+        int value;
+        Bnode* left;
+        Bnode* right;
+        Bnode(int a=0):value(a),left(nullptr),right(nullptr){}
+    };
+
+
+Bnode* createT(const int* v,int invalid, size_t size, int& index){
+//    Bnode* _root=nullptr;
+    if (index <size && v[index]!=invalid){
+        auto _root=new Bnode(invalid);
+        _root->value=v[index];
+        _root->left=createT(v, invalid, size, ++index);
+        _root->left=createT(v, invalid, size, ++index);
+    }
+    return _root;
+}
+
+Bnode* copyT(Bnode* s){
+    if(s==nullptr){
+        return nullptr;
+    }
+    auto root=new Bnode(s->value);
+    copyT(root->left);
+    copyT(root->right);
+    return root;
+}
+
+void destroyT(Bnode* s){
+    auto temp=s;
+    if(temp==nullptr){
+        return;
+    }
+    destroyT(temp->left);
+    destroyT(temp->right);
+    delete temp;
+    temp=nullptr;
+}
+
+size_t depthT(Bnode* s){
+    if(s==nullptr){
+        return 0;
+    }
+    int le=depthT(s->left)+1;
+    int ri=depthT(s->right)+1;
+    return le > ri ? le :ri;
+}
+
+class Btree{
+public:
+    Btree(int* v,int invalid, size_t size, int index){
+        root=createT(v, invalid,size,index);
+    }
+    Btree(const Btree& s){
+        root=copyT(s.root);
+    }
+    ~Btree(){
+        destroyT(root);
+    };
+    size_t _depth(){
+        return depthT(root);
+    }
+private:
+    Bnode* root;
+};
+
+
+
+
 
 int main() {
 //    vector<int> k{2,3,4,5};
@@ -432,7 +569,10 @@ int main() {
 //        cout<< endl;
 //    }
 //    cout<<recur(num,3)<<endl;
-
+//      cout<<my_nqueen(8)<<endl;
+    int a[8]={1,2,3,4,5,6,7,8};
+    Btree K(a,0,8,0);
+    cout<<K._depth()<<endl;
 
 }
 
