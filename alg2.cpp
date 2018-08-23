@@ -315,44 +315,38 @@ vector<vector<int>> oa1(vector<int> nums, int target){
 
 
 //sticks
-void helper2(vector<int> nums, int target,vector<vector<int>> &res, vector<int> &cur, int index,vector<bool> visited){
-    if(target==0){
-        res.push_back(cur);
-        return;
-    }
-    if (target<0 || index >nums.size()){
-        return;
-    }
-    for (int i=index; i<nums.size();i++)
-        if (visited[i] || (nums[i]==nums[i-1] && !visited[i-1] && i>0)) {
-            continue;
-        }
-        else {
-            cur.push_back(nums[i]);
-            visited[i] = true;
-            helper2(nums, target - nums[i], res, cur, i + 1,visited);
-            cur.pop_back();
-            visited[i] = false;
-        }
-}
+//int sumt(vector<int> s) {
+//    int sum = 0;
+//    for (auto item:s) {
+//        sum += item;
+//    }
+//    return sum;
+//}
+
+//bool helpform(vector<int> sticks, int sides,vector<int> c, int index){
+//    if (index==sticks.size()){
+//        if()
+//        }
+//    }
+//}
+
+//bool formpoly(vector<int> sticks, int sides){
+//    if(sticks.size()<sides){
+//        return false;
+//    }
+//    int sum=sumt(sticks);
+//    if (sum%sides!=0) return false;
+//    int target=sum/sides;
+//    for (auto stick:sticks){
+//        if (stick>target){
+//            return false;
+//        }
+//    }
+//    vector<int> cur;
+//    return helpform(sticks,sides,cur,0);
+//}
 
 
-bool recur(vector<int> sticks, int n){
-    bool tag=false;
-    for(int i=0;i<sticks.size();i++){
-        int tar=sticks[i];
-        vector<vector<int>> result;
-        vector<int> cur;
-        sort(sticks.begin(),sticks.end());
-        vector<bool> fl(sticks.size(),false);
-        helper2(sticks,tar,result,cur,0,fl);
-        if (result.size()>=n){
-            tag=true;
-            break;
-        }
-    }
-    return tag;
-}
 
 //sticks-2
 //void helper3(vector<int> index){
@@ -392,7 +386,7 @@ template <typename T>
 Treenode<T>* _make_tree(const T* a, size_t size, int& index, const T& invalid){
     Treenode<T>* root= nullptr;
     if (index<size && a[index]!=invalid){
-        auto root= new Treenode<T>();
+        root= new Treenode<T>();
         root->_data=a[index];
         root->_left=_make_tree(a,size,index++,invalid);
         root->_right=_make_tree(a,size,index++,invalid);
@@ -439,6 +433,9 @@ size_t depth(Treenode<T>* &root){
 }
 
 
+
+
+
 //int bitree
 struct Bnode{
         int value;
@@ -448,13 +445,13 @@ struct Bnode{
     };
 
 
-Bnode* createT(const int* v,int invalid, size_t size, int& index){
-//    Bnode* _root=nullptr;
+Bnode* createT(const int* v,int invalid, size_t size, int index){
+    Bnode* _root=nullptr;
     if (index <size && v[index]!=invalid){
-        auto _root=new Bnode(invalid);
+        _root=new Bnode(invalid);
         _root->value=v[index];
-        _root->left=createT(v, invalid, size, ++index);
-        _root->left=createT(v, invalid, size, ++index);
+        _root->left=createT(v, invalid, size, 2*index+1);
+        _root->right=createT(v, invalid, size, 2*index+2);
     }
     return _root;
 }
@@ -489,6 +486,38 @@ size_t depthT(Bnode* s){
     return le > ri ? le :ri;
 }
 
+bool isbalance(Bnode* s){
+    if (s == nullptr){
+        return true;
+    }
+    if (abs(int(depthT(s->left) - depthT(s->right)))>1){
+        return false;
+    }
+    return isbalance(s->left)&& isbalance(s->right);
+}
+
+bool issy(Bnode* le, Bnode* ri){
+    if (le == nullptr && ri== nullptr){
+        return true;
+    }
+    if (le!= nullptr && ri!=nullptr){
+        if(le->value==ri->value){
+            return issy(le->left, ri->right) && issy(le->right,ri->left);
+        }
+        return false;
+    }
+    return false;
+}
+
+bool issymetric(Bnode* s){
+    if (s == nullptr){
+        return true;
+    }
+    return issy(s->left,s->right);
+}
+
+
+
 class Btree{
 public:
     Btree(int* v,int invalid, size_t size, int index){
@@ -503,11 +532,171 @@ public:
     size_t _depth(){
         return depthT(root);
     }
+    bool isBalan(){
+        return isbalance(root);
+    }
+    bool isSym(){
+        return issymetric(root);
+    }
 private:
     Bnode* root;
 };
 
 
+//sudoku
+class Solution {
+public:
+    void solveSudoku(vector<vector<char>>& board) {
+        for(int ind=0;ind<9;ind++){
+            helper(board,ind,0);
+        }
+    }
+    void helper(vector<vector<char>>& board,int index,int c){
+        if (c==9){
+            return;
+        }
+        if(board[index][c]!='.'){
+            helper(board,index,c+1);
+        }
+        for (int fi=1;fi<10;fi++){
+            if (isrowcomplict(board,fi,index) || iscolcomplict(board,fi,c) || isregcomplict(board,fi,index,c)){
+                continue;
+            }
+            char ch=fi;
+            board[index][c]=ch;
+            helper(board,index,c+1);
+        }
+    }
+
+    bool isrowcomplict(vector<vector<char>>& board, int next,int row){
+        for(auto item :board[row]){
+            char nt=next;
+            if(nt==item){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool iscolcomplict(vector<vector<char>>& board, int next,int col){
+        for(int r=0;r<9;r++){
+            char nt=next;
+            if(nt==board[r][col]){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool isregcomplict(vector<vector<char>>& board, int next,int row, int col){
+        if (row<3){
+            if (col<3){
+                for (int i=0;i<3;i++){
+                    for (int j=0;j<3;j++){
+                        char nt=next;
+                        if(nt==board[i][j]){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            else if(col>5){
+                for (int i=0;i<3;i++){
+                    for (int j=6;j<9;j++){
+                        char nt=next;
+                        if(nt==board[i][j]){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            else{
+                for (int i=0;i<3;i++){
+                    for (int j=3;j<6;j++){
+                        char nt=next;
+                        if(nt==board[i][j]){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+        else if(row>5){
+            if (col<3){
+                for (int i=6;i<9;i++){
+                    for (int j=0;j<3;j++){
+                        char nt=next;
+                        if(nt==board[i][j]){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            else if(col>5){
+                for (int i=6;i<9;i++){
+                    for (int j=6;j<9;j++){
+                        char nt=next;
+                        if(nt==board[i][j]){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            else{
+                for (int i=6;i<9;i++){
+                    for (int j=3;j<6;j++){
+                        char nt=next;
+                        if(nt==board[i][j]){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+        else{
+            if (col<3){
+                for (int i=3;i<6;i++){
+                    for (int j=0;j<3;j++){
+                        char nt=next;
+                        if(nt==board[i][j]){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            else if(col>5){
+                for (int i=3;i<6;i++){
+                    for (int j=6;j<9;j++){
+                        char nt=next;
+                        if(nt==board[i][j]){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            else{
+                for (int i=3;i<6;i++){
+                    for (int j=3;j<6;j++){
+                        char nt=next;
+                        if(nt==board[i][j]){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+    }
+
+};
 
 
 
@@ -570,9 +759,11 @@ int main() {
 //    }
 //    cout<<recur(num,3)<<endl;
 //      cout<<my_nqueen(8)<<endl;
-    int a[8]={1,2,3,4,5,6,7,8};
-    Btree K(a,0,8,0);
+    int a[7]={1,2,3,4,5,6,7};
+    Btree K(a,-1,7,0);
     cout<<K._depth()<<endl;
+    cout<<K.isBalan()<<endl;
+    cout<<K.isSym()<<endl;
 
 }
 
