@@ -8,10 +8,11 @@
 #include <algorithm>
 #include <list>
 #include <set>
+#include <limits>
 //#include "alg.h"
 
 using namespace std;
-
+int max_sum=INT8_MIN;
 
 //case1
 bool my_knapsake(vector<int> v, int w, int in)
@@ -516,7 +517,64 @@ bool issymetric(Bnode* s){
     return issy(s->left,s->right);
 }
 
+int getD(Bnode* s){
+    if (s== nullptr){
+        return 0;
+    }
+    int le=getD(s->left);
+    int ri=getD(s->right);
+    if(le==-1 ||ri==-1|| abs(le-ri)>1){
+        return -1;
+    }
+    return le>ri?le+1:ri+1;
+}
 
+int miniD(Bnode* s){
+    if (s==nullptr){
+        return 0;
+    }
+    int le=miniD(s->left);
+    int ri=miniD(s->right);
+    if(le==0||ri==0){
+        return le>ri?le+1:ri+1;
+    }
+    return le<ri?le+1:ri+1;
+}
+
+bool _hasPath(Bnode* s, int a){
+    if (s==nullptr){
+        return false;
+    }
+    if (s->left== nullptr && s->right== nullptr){
+        if(a==s->value ){
+            return true;
+        }
+        return false;
+    }
+    return _hasPath(s->left, a-s->value) || _hasPath(s->right, a-s->value);
+}
+
+int my_max(int a, int b){return a>b?a:b;};
+
+int maxBranch(Bnode* s){
+    if (s== nullptr){
+        return 0;
+    }
+    int le=maxBranch(s->left);
+    int ri=maxBranch(s->right);
+    int maxbranch=s->value+my_max(0,my_max(le,ri));
+    max_sum=my_max(max_sum, my_max(maxbranch,le+s->value+ri));
+    return maxbranch;
+}
+
+int _maxS(Bnode* s){
+    if (s==nullptr){
+        return 0;
+    }
+    max_sum=INT8_MIN;
+    maxBranch(s);
+    return max_sum;
+}
 
 class Btree{
 public:
@@ -532,18 +590,35 @@ public:
     size_t _depth(){
         return depthT(root);
     }
+    bool isba(){
+        return getD(root)!=-1;
+    }
     bool isBalan(){
         return isbalance(root);
     }
     bool isSym(){
         return issymetric(root);
     }
+
+    int miniDepth(){
+        return miniD(root);
+    }
+
+    int pathSum(int a){
+        return _hasPath(root, a);
+    }
+
+    int maxSum(){
+        return _maxS(root);
+    }
 private:
     Bnode* root;
 };
 
 
-//sudoku
+
+
+//sudoku-stillworking
 class Solution {
 public:
     void solveSudoku(vector<vector<char>>& board) {
@@ -759,12 +834,14 @@ int main() {
 //    }
 //    cout<<recur(num,3)<<endl;
 //      cout<<my_nqueen(8)<<endl;
-    int a[7]={1,2,3,4,5,6,7};
-    Btree K(a,-1,7,0);
-    cout<<K._depth()<<endl;
-    cout<<K.isBalan()<<endl;
-    cout<<K.isSym()<<endl;
-
+    int a[5]={1,2,3,4,5};
+    Btree K(a,-1,5,0);
+//    cout<<K._depth()<<endl;
+//    cout<<K.isBalan()<<endl;
+//    cout<<K.isSym()<<endl;
+//    cout<<K.miniDepth()<<endl;
+    cout<<K.pathSum(3)<<endl;
+    cout<<K.maxSum()<<endl;
 }
 
 
