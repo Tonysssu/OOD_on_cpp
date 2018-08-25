@@ -773,6 +773,47 @@ public:
 
 };
 
+//word searching
+
+
+bool searching(vector<vector<char>> board, string word, int index, int x, int y, vector<vector<bool>> visited){
+        if(index==word.length()){
+            return true;
+        }
+        if (x<0|| y<0|| x>=board.size() || y>=board[0].size()|| visited[x][y]|| board[x][y]!=word[index]){
+            return false;
+        }
+        int dx[4]={0,-1,1,0};
+        int dy[4]={-1,0,0,1};
+        for (int i=0;i<4;i++){
+            visited[x][y]=true;
+            if(searching(board,word,index+1,x+dx[i],y+dy[i],visited)){
+                return true;
+            }
+            visited[x][y]=false; 
+        }
+        return false;
+    }
+
+bool exist(vector<vector<char>>& board, string word) {
+    if(board.size()==0 || board[0].size()==0){
+        return false;
+    }
+    if((board.size()*board[0].size())<word.length()){
+        return false;
+    }
+    vector<bool> temp(board[0].size(),false);
+    vector<vector<bool>> flag(board.size(),temp);
+    for(int i=0;i<board.size();i++){
+        for(int j=0;j<board[0].size();j++) {
+            if (searching(board,word,0,i,j,flag)){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 
 
 int main() {
