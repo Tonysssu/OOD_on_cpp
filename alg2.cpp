@@ -70,7 +70,7 @@ bool my_maze(vector<vector<char>> a, int Bx, int By, int StartX, int StartY, int
     int dy[4]{-1,1,0,0};
     vector<string> dir{"up","down","left","right"};
 
-    for (auto i=0; i<5; i++) {
+    for (auto i=0; i<4; i++) {
         path.push_back(dir[i]);
         if (my_maze(a, Bx, By, StartX + dy[i], StartY + dx[i], TargetX, TargetY, path)) {
             return true;
@@ -774,8 +774,6 @@ public:
 };
 
 //word searching
-
-
 bool searching(vector<vector<char>> board, string word, int index, int x, int y, vector<vector<bool>> visited){
         if(index==word.length()){
             return true;
@@ -790,7 +788,7 @@ bool searching(vector<vector<char>> board, string word, int index, int x, int y,
             if(searching(board,word,index+1,x+dx[i],y+dy[i],visited)){
                 return true;
             }
-            visited[x][y]=false; 
+            visited[x][y]=false;
         }
         return false;
     }
@@ -814,6 +812,43 @@ bool exist(vector<vector<char>>& board, string word) {
     return false;
 }
 
+//palindrome partitioning
+bool ispalin(string sub,int begin){
+    int len=sub.length();
+    if (len==1){
+        return true;
+    }
+    if (sub[begin]==sub[len-1]){
+        sub.pop_back();
+        return ispalin(sub,begin+1);
+    }
+    return false;
+}
+
+
+void parthelp(string tar, int index, vector<vector<string>> res, vector<string> cur){
+    if (index==tar.length()){
+        res.push_back(cur);
+        return;
+    }
+    for (int len=1;len<tar.length()-index;len++) {
+        string sub = tar.substr(index, len);
+        if(ispalin(sub,0)){
+            cur.push_back(sub);
+            parthelp(tar,index+len,res,cur);
+            cur.pop_back();
+        }
+    }
+
+
+}
+
+vector<vector<string>> parti(string target){
+    vector<vector<string>> results;
+    vector<string> current;
+    parthelp(target, 0, results,current);
+    return results;
+}
 
 
 int main() {
