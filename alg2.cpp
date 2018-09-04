@@ -9,6 +9,7 @@
 #include <list>
 #include <set>
 #include <limits>
+#include <queue>
 //#include "alg.h"
 
 using namespace std;
@@ -576,6 +577,50 @@ int _maxS(Bnode* s){
     return max_sum;
 }
 
+void levelorder(Bnode* s){
+    queue<Bnode*> line;
+    line.push(s);
+    while(!line.empty()){
+        auto top=line.front();
+        cout<<top->value<<" ";
+        line.pop();
+        if(top->left!=nullptr){
+            line.push(top->left);
+        }
+        if(top->right!=nullptr){
+            line.push(top->right);
+        }
+    }
+}
+
+vector<vector<int>> _levelo(Bnode* s){
+    vector<vector<int>> result;
+    queue<Bnode*> line1;
+    if(s!=nullptr){
+        line1.push(s);
+    }
+    while(!line1.empty()){
+        vector<int> oneres;
+        queue<Bnode*> line2;
+        while(!line1.empty()){
+            auto top=line1.front();
+            line1.pop();
+            if(top->left!=nullptr){
+                line2.push(top->left);
+            }
+            if(top->right!=nullptr){
+                line2.push(top->right);
+            }
+            oneres.push_back(top->value);
+        }
+        result.push_back(oneres);
+        line1=line2;
+    }
+    return result;
+}
+
+
+
 class Btree{
 public:
     Btree(int* v,int invalid, size_t size, int index){
@@ -610,6 +655,13 @@ public:
 
     int maxSum(){
         return _maxS(root);
+    }
+
+    void _level(){
+        levelorder(root);
+    }
+    vector<vector<int>> _levelO(){
+        return _levelo(root);
     }
 private:
     Bnode* root;
@@ -825,7 +877,6 @@ bool ispalin(string sub,int begin){
     return false;
 }
 
-
 void parthelp(string tar, int index, vector<vector<string>> res, vector<string> cur){
     if (index==tar.length()){
         res.push_back(cur);
@@ -850,6 +901,35 @@ vector<vector<string>> parti(string target){
     return results;
 }
 
+//invalid paranthesis
+void rp(string s, int index, vector<string> result, string c,int& count){
+    if(index==s.length()){
+        result.push_back(c);
+        return;
+    }
+    if(s[index]=='('){
+        rp(s, index+1, result, c+s[index], ++count);
+        rp(s,index+1,result,c,count);
+
+    }
+    if(s[index]==')'){
+        if(count>0) {
+            rp(s, index+1, result, c+s[index] ,--count);
+            rp(s, index+1, result, c,count);
+        }
+    }
+    if(s[index]!='(' || s[index]!=')'){
+        rp(s, index+1, result, c+s[index], count);
+    }
+}
+
+vector<string> removeInvalidParentheses(string s) {
+    vector<string> res;
+    string cur;
+    int cot=0;
+    rp(s,0,res, cur,cot);
+    return res;
+}
 
 int main() {
 //    vector<int> k{2,3,4,5};
