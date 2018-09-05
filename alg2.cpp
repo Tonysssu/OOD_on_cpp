@@ -619,7 +619,10 @@ vector<vector<int>> _levelo(Bnode* s){
     return result;
 }
 
-
+//vector<vector<int>> _zigzag(Bnode* s){
+//    vector<vector<int>> result;
+//
+//}
 
 class Btree{
 public:
@@ -662,6 +665,10 @@ public:
     }
     vector<vector<int>> _levelO(){
         return _levelo(root);
+    }
+
+    vector<vector<int>> _zig(){
+        return _zigzag(root);
     }
 private:
     Bnode* root;
