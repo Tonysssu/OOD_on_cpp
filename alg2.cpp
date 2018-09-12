@@ -938,6 +938,33 @@ vector<string> removeInvalidParentheses(string s) {
     return res;
 }
 
+
+//wordladder
+vector<string> candi(vector<string> wordList,string target){
+        vector<string> candidates;
+        for(auto word:wordList){
+            if(withindistance(word,target)){
+                candidates.push_back(word);
+            }
+        }
+        return candidates;
+    }
+
+    bool withindistance(string word, string target){
+        int count=0;
+        for(int i=0;i<target.size();i++){
+            if(word[i]!=target[i]){
+                count++;
+            }
+        }
+        if(count==1){
+            return true;
+        }
+        return false;
+    }
+
+
+    
 int main() {
 //    vector<int> k{2,3,4,5};
 //    int val=13;
