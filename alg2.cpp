@@ -667,9 +667,9 @@ public:
         return _levelo(root);
     }
 
-    vector<vector<int>> _zig(){
-        return _zigzag(root);
-    }
+//    vector<vector<int>> _zig(){
+//        return _zigzag(root);
+//    }
 private:
     Bnode* root;
 };
@@ -940,31 +940,31 @@ vector<string> removeInvalidParentheses(string s) {
 
 
 //wordladder
-vector<string> candi(vector<string> wordList,string target){
-        vector<string> candidates;
-        for(auto word:wordList){
-            if(withindistance(word,target)){
-                candidates.push_back(word);
-            }
-        }
-        return candidates;
-    }
+//vector<string> candi(vector<string> wordList,string target){
+//        vector<string> candidates;
+//        for(auto word:wordList){
+//            if(withindistance(word,target)){
+//                candidates.push_back(word);
+//            }
+//        }
+//        return candidates;
+//    }
+//
+//    bool withindistance(string word, string target){
+//        int count=0;
+//        for(int i=0;i<target.size();i++){
+//            if(word[i]!=target[i]){
+//                count++;
+//            }
+//        }
+//        if(count==1){
+//            return true;
+//        }
+//        return false;
+//    }
 
-    bool withindistance(string word, string target){
-        int count=0;
-        for(int i=0;i<target.size();i++){
-            if(word[i]!=target[i]){
-                count++;
-            }
-        }
-        if(count==1){
-            return true;
-        }
-        return false;
-    }
 
 
-    
 int main() {
 //    vector<int> k{2,3,4,5};
 //    int val=13;
@@ -1024,16 +1024,43 @@ int main() {
 //    }
 //    cout<<recur(num,3)<<endl;
 //      cout<<my_nqueen(8)<<endl;
-    int a[5]={1,2,3,4,5};
-    Btree K(a,-1,5,0);
+//    int a[5]={1,2,3,4,5};
+//    Btree K(a,-1,5,0);
 //    cout<<K._depth()<<endl;
 //    cout<<K.isBalan()<<endl;
 //    cout<<K.isSym()<<endl;
 //    cout<<K.miniDepth()<<endl;
-    cout<<K.pathSum(3)<<endl;
-    cout<<K.maxSum()<<endl;
+//    cout<<K.pathSum(3)<<endl;
+//    cout<<K.maxSum()<<endl;
+    set<int> test;
+    for(int i=0;i!=9;i++){
+        test.insert(i);
+    }
+    set<int>::iterator it=test.begin();
+    cout<<*it<<endl;
+    test.erase(it);
+    it--;
+    cout<<*it<<endl;
 }
 
+
+//pathsum2
+    vector<vector<int>> pathSum(TreeNode *root, int sum) {
+        vector<vector<int>> result;
+        vector<int> current;
+        helper(root, sum, current, result);
+        return result;
+    }
+
+    void helper(TreeNode *root, int sum, vector<int> &cur, vector<vector<int>> &res) {
+        if (sum == 0) {
+            res.push_back(cur);
+            return;
+        }
+        if (root->left == nullptr && root->right == nullptr) {
+            
+        }
+    }
 
 //    vector<vector<int>> fi=permut(nu,resu,cu,in);
 
